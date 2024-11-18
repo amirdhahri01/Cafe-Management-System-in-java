@@ -4,6 +4,7 @@
  */
 package cafe.management.system;
 
+import dao.UserDao;
 import javax.swing.JOptionPane;
 import model.User;
 
@@ -34,7 +35,20 @@ public class Signup extends javax.swing.JFrame {
         txtPassword.setText("");
         btnSave.setEnabled(false);
     }
-
+    public void validateFields(){
+        String name = txtName.getText();
+        String email = txtEmail.getText();
+        String address = txtAdress.getText();
+        String mobileNumber = txtMobileNumber.getText();
+        String password = txtPassword.getText();
+        String answer = txtAnswer.getText();
+        String securityQuestion = txtSecurityQuestion.getText();    
+        if(!name.equals("") && email.matches(emailPattren) && mobileNumber.matches(mobileNumberPattren) && mobileNumber.length() == 8 && !address.equals("") && !password.equals("") && !securityQuestion.equals("") && !answer.equals("")){
+            btnSave.setEnabled(true);
+        }else{
+            btnSave.setEnabled(false);
+        }
+    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -141,6 +155,11 @@ public class Signup extends javax.swing.JFrame {
         btnClear.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clear.png"))); // NOI18N
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 560, -1, -1));
 
         btnExit.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -188,6 +207,8 @@ public class Signup extends javax.swing.JFrame {
         user.setAnswer(txtAnswer.getText());
         user.setSecurityQuestion(txtSecurityQuestion.getText());
         user.setAddress(txtAdress.getText());
+        UserDao.save(user);
+        clear();
     }//GEN-LAST:event_btnSaveActionPerformed
 
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
@@ -196,6 +217,10 @@ public class Signup extends javax.swing.JFrame {
             System.exit(0);
         }
     }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+       clear();
+    }//GEN-LAST:event_btnClearActionPerformed
 
     /**
      * @param args the command line arguments
