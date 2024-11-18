@@ -28,7 +28,7 @@ public class DbOperations {
             Statement statement = con.createStatement();
             ResultSet rs = statement.executeQuery(query);
             return rs;
-        } catch (Exception e) {
+        } catch (SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
         }
         return null;

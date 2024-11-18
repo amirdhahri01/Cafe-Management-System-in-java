@@ -16,7 +16,7 @@ public class UserDao {
         User user = null;
         try {
             ResultSet rs = DbOperations.getData("SELECT * FROM user WHERE email='" + email + "' and password='" + password + "'");
-            while(rs.next()){
+            while (rs.next()) {
                 user = new User();
                 user.setStatus(rs.getString("status"));
             }
@@ -26,4 +26,23 @@ public class UserDao {
         return user;
     }
 
+    public static User getSecurityQuestion(String email) {
+        User user = null;
+        try {
+            ResultSet rs = DbOperations.getData("SELECT * FROM user WHERE email='" + email + "'");
+            while (rs.next()) {
+                user = new User();
+                user.setSecurityQuestion(rs.getString("securityQuestion"));
+                user.setAnswer(rs.getString("answer"));
+            }
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
+        }
+        return user;
+    }
+
+    public static void update(String email, String password) {
+        String query = "UPDATE user SET password = '" + password + "' WHERE email='" + email + "'";
+        DbOperations.setDatOrDelete(query, "Password Changed Successfully");
+    }
 }

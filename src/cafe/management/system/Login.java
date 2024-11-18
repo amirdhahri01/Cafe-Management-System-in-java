@@ -14,7 +14,7 @@ import model.User;
  * @author Amir Dhahri
  */
 public class Login extends javax.swing.JFrame {
-    
+
     public String emailPattren = "^[a-zA-Z0-9]+[@]+[a-zA-Z0-9]+[.]+[a-zA-Z0-9]+$";
 
     /**
@@ -24,13 +24,13 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         btnLogin.setEnabled(false);
     }
-    
+
     public void clear() {
         txtEmail.setText("");
         txtPassword.setText("");
         btnLogin.setEnabled(false);
     }
-    
+
     public void validateFields() {
         String email = txtEmail.getText();
         String password = txtPassword.getText();
@@ -132,6 +132,11 @@ public class Login extends javax.swing.JFrame {
 
         jButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton4.setText("Forget password ?");
+        jButton4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton4ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 430, -1, -1));
 
         btnSignup.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -197,6 +202,11 @@ public class Login extends javax.swing.JFrame {
         setVisible(false);
         new Signup().setVisible(true);
     }//GEN-LAST:event_btnSignupActionPerformed
+
+    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+        this.setVisible(false);
+        new ForgetPassword().setVisible(true);
+    }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
      * @param args the command line arguments
