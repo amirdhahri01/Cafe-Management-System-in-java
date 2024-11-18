@@ -14,7 +14,7 @@ import model.User;
  * @author Amir Dhahri
  */
 public class Login extends javax.swing.JFrame {
-
+    
     public String emailPattren = "^[a-zA-Z0-9]+[@]+[a-zA-Z0-9]+[.]+[a-zA-Z0-9]+$";
 
     /**
@@ -24,13 +24,13 @@ public class Login extends javax.swing.JFrame {
         initComponents();
         btnLogin.setEnabled(false);
     }
-
+    
     public void clear() {
         txtEmail.setText("");
         txtPassword.setText("");
         btnLogin.setEnabled(false);
     }
-
+    
     public void validateFields() {
         String email = txtEmail.getText();
         String password = txtPassword.getText();
@@ -59,7 +59,7 @@ public class Login extends javax.swing.JFrame {
         btnExit = new javax.swing.JButton();
         btnClear = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        btnSignup = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -134,9 +134,14 @@ public class Login extends javax.swing.JFrame {
         jButton4.setText("Forget password ?");
         getContentPane().add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 430, -1, -1));
 
-        jButton5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton5.setText("Signup");
-        getContentPane().add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 430, -1, -1));
+        btnSignup.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSignup.setText("Signup");
+        btnSignup.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSignupActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnSignup, new org.netbeans.lib.awtextra.AbsoluteConstraints(730, 430, -1, -1));
 
         jLabel4.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/first page background.PNG"))); // NOI18N
         jLabel4.setText("jLabel4");
@@ -188,6 +193,11 @@ public class Login extends javax.swing.JFrame {
         clear();
     }//GEN-LAST:event_btnClearActionPerformed
 
+    private void btnSignupActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSignupActionPerformed
+        setVisible(false);
+        new Signup().setVisible(true);
+    }//GEN-LAST:event_btnSignupActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -227,8 +237,8 @@ public class Login extends javax.swing.JFrame {
     private javax.swing.JButton btnClear;
     private javax.swing.JButton btnExit;
     private javax.swing.JButton btnLogin;
+    private javax.swing.JButton btnSignup;
     private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
