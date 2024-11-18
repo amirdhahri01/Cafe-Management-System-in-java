@@ -4,17 +4,35 @@
  */
 package cafe.management.system;
 
+import javax.swing.JOptionPane;
+import model.User;
+
 /**
  *
  * @author Amir Dhahri
  */
 public class Signup extends javax.swing.JFrame {
 
+    public String emailPattren = "^[a-zA-Z0-9]+[@]+[a-zA-Z0-9]+[.]+[a-zA-Z0-9]+$";
+    public String mobileNumberPattren = "^[0-9]*$";
+
     /**
      * Creates new form SignUp
      */
     public Signup() {
         initComponents();
+        btnSave.setEnabled(false);
+    }
+
+    public void clear() {
+        //Reset the fields
+        txtName.setText("");
+        txtEmail.setText("");
+        txtMobileNumber.setText("");
+        txtSecurityQuestion.setText("");
+        txtAnswer.setText("");
+        txtPassword.setText("");
+        btnSave.setEnabled(false);
     }
 
     /**
@@ -41,9 +59,9 @@ public class Signup extends javax.swing.JFrame {
         txtAnswer = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         txtAdress = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        btnSave = new javax.swing.JButton();
+        btnClear = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jButton5 = new javax.swing.JButton();
         jLabel9 = new javax.swing.JLabel();
@@ -110,25 +128,30 @@ public class Signup extends javax.swing.JFrame {
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(440, 330, -1, -1));
         getContentPane().add(txtAdress, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 330, 351, -1));
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
-        jButton1.setText("Save");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnSave.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSave.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/save.png"))); // NOI18N
+        btnSave.setText("Save");
+        btnSave.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnSaveActionPerformed(evt);
             }
         });
-        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 560, -1, -1));
+        getContentPane().add(btnSave, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 560, -1, -1));
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clear.png"))); // NOI18N
-        jButton2.setText("Clear");
-        getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 560, -1, -1));
+        btnClear.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clear.png"))); // NOI18N
+        btnClear.setText("Clear");
+        getContentPane().add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 560, -1, -1));
 
-        jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton3.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/exit small.png"))); // NOI18N
-        jButton3.setText("Exit");
-        getContentPane().add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 560, -1, -1));
+        btnExit.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnExit.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/exit small.png"))); // NOI18N
+        btnExit.setText("Exit");
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
+        getContentPane().add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(870, 560, -1, -1));
 
         jButton4.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton4.setText("Forget Password ?");
@@ -156,9 +179,23 @@ public class Signup extends javax.swing.JFrame {
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNameActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+    private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
+        User user = new User();
+        user.setName(txtName.getText());
+        user.setEmail(txtEmail.getText());
+        user.setPassword(txtPassword.getText());
+        user.setMobileNumber(txtMobileNumber.getText());
+        user.setAnswer(txtAnswer.getText());
+        user.setSecurityQuestion(txtSecurityQuestion.getText());
+        user.setAddress(txtAdress.getText());
+    }//GEN-LAST:event_btnSaveActionPerformed
+
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
+        int a = JOptionPane.showConfirmDialog(null, "Do you really want to close the application.", "Select", JOptionPane.YES_NO_OPTION);
+        if (a == 0) {
+            System.exit(0);
+        }
+    }//GEN-LAST:event_btnExitActionPerformed
 
     /**
      * @param args the command line arguments
@@ -197,9 +234,9 @@ public class Signup extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnClear;
+    private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnSave;
     private javax.swing.JButton jButton4;
     private javax.swing.JButton jButton5;
     private javax.swing.JLabel jLabel1;
