@@ -4,11 +4,15 @@
  */
 package cafe.management.system;
 
+import dao.BillDao;
+import dao.CategoryDao;
 import dao.ProductDao;
 import java.util.ArrayList;
 import javax.swing.JFormattedTextField;
 import javax.swing.JSpinner;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import model.Category;
 import model.Product;
 
 /**
@@ -116,6 +120,7 @@ public class PlaceOrder extends javax.swing.JFrame {
         jLabel13 = new javax.swing.JLabel();
         lblGrandTotal = new javax.swing.JLabel();
         btnGenerateBillAndPrint = new javax.swing.JButton();
+        lblBillID = new javax.swing.JLabel();
         jLabel15 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -189,6 +194,11 @@ public class PlaceOrder extends javax.swing.JFrame {
         getContentPane().add(jLabel7, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 180, -1, -1));
 
         txtSearch.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtSearch.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtSearchKeyReleased(evt);
+            }
+        });
         getContentPane().add(txtSearch, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 220, 250, -1));
 
         jTable2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -200,6 +210,11 @@ public class PlaceOrder extends javax.swing.JFrame {
                 "Name"
             }
         ));
+        jTable2.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable2MouseClicked(evt);
+            }
+        });
         jScrollPane2.setViewportView(jTable2);
 
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 280, 250, -1));
@@ -226,6 +241,11 @@ public class PlaceOrder extends javax.swing.JFrame {
         getContentPane().add(jLabel11, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 180, -1, -1));
 
         jSpinner1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jSpinner1.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                jSpinner1StateChanged(evt);
+            }
+        });
         getContentPane().add(jSpinner1, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 220, 250, -1));
 
         jLabel12.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -274,6 +294,10 @@ public class PlaceOrder extends javax.swing.JFrame {
         btnGenerateBillAndPrint.setText("Generate Bill & Print");
         getContentPane().add(btnGenerateBillAndPrint, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 540, -1, -1));
 
+        lblBillID.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        lblBillID.setForeground(new java.awt.Color(255, 255, 255));
+        getContentPane().add(lblBillID, new org.netbeans.lib.awtextra.AbsoluteConstraints(150, 90, 90, 20));
+
         jLabel15.setForeground(new java.awt.Color(255, 255, 255));
         jLabel15.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/full-page-background.PNG"))); // NOI18N
         getContentPane().add(jLabel15, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
@@ -287,8 +311,45 @@ public class PlaceOrder extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
-        billID = Integer.parseInt(userEmail);
+        billID = Integer.parseInt(BillDao.getID());
+        lblBillID.setText(String.valueOf(billID));
+        ArrayList<Category> categories = CategoryDao.getAllRecords();
+        categories.forEach(category -> {
+            jComboBox1.addItem(category.getName());
+        });
+        String category = (String)jComboBox1.getSelectedItem();
+        productNameByCategory(category);
     }//GEN-LAST:event_formComponentShown
+
+    private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
+        String name = txtSearch.getText();
+        String category = (String)jComboBox1.getSelectedItem();
+        filterProductByName(name, category);
+    }//GEN-LAST:event_txtSearchKeyReleased
+
+    private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
+       int idx = jTable1.getSelectedRow();
+       TableModel tableModel = jTable1.getModel();
+       String productName = tableModel.getValueAt(idx, 0).toString();
+       Product product = ProductDao.getProductByName(productName);
+       txtProductName.setText(product.getName());
+       txtProductPrice.setText(product.getPrice());
+       jSpinner1.setValue(1);
+       txtProductTotal.setText(product.getPrice());
+       productPrice = Integer.parseInt(product.getPrice());
+       productTotal = Integer.parseInt(product.getPrice());
+       btnAddToCart.setEnabled(true);
+    }//GEN-LAST:event_jTable2MouseClicked
+
+    private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
+        int quantity = (Integer)jSpinner1.getValue();
+        if(quantity <= 1){
+            jSpinner1.setValue(1);
+            quantity = 1;
+        }
+        productTotal = productTotal * productPrice;
+        txtProductTotal.setText(String.valueOf(productTotal));
+    }//GEN-LAST:event_jSpinner1StateChanged
     /**
      * @param args the command line arguments
      */
@@ -349,6 +410,7 @@ public class PlaceOrder extends javax.swing.JFrame {
     private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTable jTable2;
+    private javax.swing.JLabel lblBillID;
     private javax.swing.JLabel lblGrandTotal;
     private javax.swing.JTextField txtCustomerName;
     private javax.swing.JTextField txtEmail;
