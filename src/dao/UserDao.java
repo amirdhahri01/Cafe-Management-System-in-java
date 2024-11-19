@@ -3,6 +3,8 @@ package dao;
 import javax.swing.JOptionPane;
 import model.User;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 public class UserDao {
 
@@ -44,5 +46,34 @@ public class UserDao {
     public static void update(String email, String password) {
         String query = "UPDATE user SET password = '" + password + "' WHERE email='" + email + "'";
         DbOperations.setDatOrDelete(query, "Password Changed Successfully");
+    }
+
+    public static ArrayList<User> getAllRecords(String email) {
+        ArrayList<User> users = new ArrayList<>();
+        try {
+            ResultSet rs = DbOperations.getData("SELECT * FROM user WHERE email like '%" + email + "%'");
+            while (rs.next()) {
+                User user = new User();
+                user.setId(rs.getInt("id"));
+                user.setName(rs.getString("name"));
+                user.setEmail(rs.getString("email"));
+                user.setAddress(rs.getString("address"));
+                user.setMobileNumber(rs.getString("mobileNumber"));
+                user.setPassword(rs.getString("password"));
+                user.setSecurityQuestion(rs.getString("securityQuestion"));
+                user.setAnswer(rs.getString("answer"));
+                user.setStatus(rs.getString("status"));
+                users.add(user);
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
+        }
+        return users;
+    }
+
+    public static void changeState(String email, String status) {
+        String query = "UPDATE user SET status='" + status + "' WHERE email='" + email + "';";
+        DbOperations.setDatOrDelete(query, "User Status Updated Successfully");
     }
 }

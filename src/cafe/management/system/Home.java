@@ -70,6 +70,11 @@ public class Home extends javax.swing.JFrame {
         jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/place order.png"))); // NOI18N
         jButton2.setText("Place Order");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 20, -1, 37));
 
         jButton3.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -120,11 +125,21 @@ public class Home extends javax.swing.JFrame {
         btnViewEditDeleteProduct.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnViewEditDeleteProduct.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/view edit delete product.png"))); // NOI18N
         btnViewEditDeleteProduct.setText("View,Edit & Delete Product");
+        btnViewEditDeleteProduct.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnViewEditDeleteProductActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnViewEditDeleteProduct, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 720, -1, -1));
 
         btnVerifyUsers.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnVerifyUsers.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/verify users.png"))); // NOI18N
         btnVerifyUsers.setText("Verify Users");
+        btnVerifyUsers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVerifyUsersActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnVerifyUsers, new org.netbeans.lib.awtextra.AbsoluteConstraints(1010, 720, -1, -1));
 
         jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/home-background-image.png"))); // NOI18N
@@ -156,6 +171,19 @@ public class Home extends javax.swing.JFrame {
     private void btnNewProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewProductActionPerformed
         new AddNewProduct().setVisible(true);
     }//GEN-LAST:event_btnNewProductActionPerformed
+
+    private void btnViewEditDeleteProductActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnViewEditDeleteProductActionPerformed
+        new ViewEditDeleteProduct().setVisible(true);
+    }//GEN-LAST:event_btnViewEditDeleteProductActionPerformed
+
+    private void btnVerifyUsersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVerifyUsersActionPerformed
+        new VerifyUsers().setVisible(true);
+    }//GEN-LAST:event_btnVerifyUsersActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        setVisible(false);
+        new PlaceOrder(email).setVisible(true);
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments

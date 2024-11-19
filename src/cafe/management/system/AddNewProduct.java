@@ -157,9 +157,9 @@ public class AddNewProduct extends javax.swing.JFrame {
 
     private void btnSaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveActionPerformed
         Product product = new Product();
-        product.setName(txtName.getName());
+        product.setName(txtName.getText());
         product.setPrice(txtPrice.getText());
-        product.setPrice((String) jComboBox1.getSelectedItem());
+        product.setCategory((String) jComboBox1.getSelectedItem());
         ProductDao.save(product);
         this.setVisible(false);
         new AddNewProduct().setVisible(true);
