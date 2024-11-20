@@ -95,12 +95,17 @@ public class UserDao {
         try {
             ResultSet rs = DbOperations.getData("SELECT * FROM user WHERE email='" + email + "' and password='" + password + "';");
             if (rs.next()) {
-                
+                update(email, securityQuestion , answer);
             } else {
-                JOptionPane.showMessageDialog(null, "Email or Password if invalid.");
+                JOptionPane.showMessageDialog(null, "Password is wrong.");
             }
         } catch (HeadlessException | SQLException e) {
             JOptionPane.showMessageDialog(null, e.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
         }
+    }
+    
+    public static void update(String email , String securityQuestion, String answer){
+        String query = "UPDATE user SET securityQuestion='" + securityQuestion+"'" + ",answer='"+answer+"' WHERE email='" + email + "';";
+        DbOperations.setDatOrDelete(query, "Security Question Changed Successfully.");
     }
 }
