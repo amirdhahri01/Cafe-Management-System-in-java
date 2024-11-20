@@ -1,5 +1,6 @@
 package dao;
 
+import java.awt.HeadlessException;
 import javax.swing.JOptionPane;
 import model.User;
 import java.sql.ResultSet;
@@ -75,5 +76,31 @@ public class UserDao {
     public static void changeState(String email, String status) {
         String query = "UPDATE user SET status='" + status + "' WHERE email='" + email + "';";
         DbOperations.setDatOrDelete(query, "User Status Updated Successfully");
+    }
+
+    public static void changePassword(String email, String oldPassword, String newPassword) {
+        try {
+            ResultSet rs = DbOperations.getData("SELECT * FROM user WHERE email='" + email + "' and password='" + oldPassword + "';");
+            if (rs.next()) {
+                update(email, newPassword);
+            } else {
+                JOptionPane.showMessageDialog(null, "Old password is wrong");
+            }
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    public static void changeSecurityQuestion(String email, String password, String securityQuestion, String answer) {
+        try {
+            ResultSet rs = DbOperations.getData("SELECT * FROM user WHERE email='" + email + "' and password='" + password + "';");
+            if (rs.next()) {
+                
+            } else {
+                JOptionPane.showMessageDialog(null, "Email or Password if invalid.");
+            }
+        } catch (HeadlessException | SQLException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
+        }
     }
 }

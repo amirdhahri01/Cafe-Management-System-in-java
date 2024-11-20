@@ -4,14 +4,26 @@
  */
 package cafe.management.system;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
+import common.OpenPDF;
 import dao.BillDao;
 import dao.CategoryDao;
 import dao.ProductDao;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import javax.swing.JFormattedTextField;
+import javax.swing.JOptionPane;
 import javax.swing.JSpinner;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
+import model.Bill;
 import model.Category;
 import model.Product;
 
@@ -20,6 +32,7 @@ import model.Product;
  * @author Amir Dhahri
  */
 public class PlaceOrder extends javax.swing.JFrame {
+
     public int billID = 1;
     public int grandTotal = 0;
     public int productPrice = 0;
@@ -27,12 +40,14 @@ public class PlaceOrder extends javax.swing.JFrame {
     public String emailPattern = "^[a-zA-Z0-9]+[@]+[a-zA-Z0-9]+[.]+[a-zA-Z0-9]+$";
     public String mobileNumberPattern = "^[0-9]*$";
     public String userEmail = null;
+
     /**
      * Creates new form PlaceOrder
      */
     public PlaceOrder() {
         initComponents();
     }
+
     public PlaceOrder(String userEmail) {
         initComponents();
         txtProductName.setEditable(false);
@@ -40,27 +55,30 @@ public class PlaceOrder extends javax.swing.JFrame {
         txtProductTotal.setEditable(false);
         btnAddToCart.setEnabled(false);
         btnGenerateBillAndPrint.setEnabled(false);
-        JFormattedTextField tf = ((JSpinner.DefaultEditor)jSpinner1.getEditor()).getTextField();
-        tf.setEnabled(false);
+        JFormattedTextField tf = ((JSpinner.DefaultEditor) jSpinner1.getEditor()).getTextField();
+        tf.setEditable(false);
         this.userEmail = userEmail;
     }
-    public void productNameByCategory(String category){
-        DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
+
+    public void productNameByCategory(String category) {
+        DefaultTableModel dtm = (DefaultTableModel) jTable2.getModel();
         dtm.setRowCount(0);
         ArrayList<Product> products = ProductDao.getProductsByCategory(category);
         products.forEach(product -> {
             dtm.addRow(new Object[]{product.getName()});
         });
     }
-    public void filterProductByName(String name , String category){
-        DefaultTableModel dtm = (DefaultTableModel)jTable1.getModel();
+
+    public void filterProductByName(String name, String category) {
+        DefaultTableModel dtm = (DefaultTableModel) jTable2.getModel();
         dtm.setRowCount(0);
-        ArrayList<Product> products = ProductDao.filterProductByCategory(name,category);
+        ArrayList<Product> products = ProductDao.filterProductByCategory(name, category);
         products.forEach(product -> {
             dtm.addRow(new Object[]{product.getName()});
         });
     }
-    public void clearProductFields(){
+
+    public void clearProductFields() {
         txtProductTotal.setText("");
         txtEmail.setText("");
         txtProductName.setText("");
@@ -68,18 +86,21 @@ public class PlaceOrder extends javax.swing.JFrame {
         txtSearch.setText("");
         txtCustomerName.setText("");
         jSpinner1.setValue(1);
+        txtMobileNumber.setText("");
         btnAddToCart.setEnabled(false);
     }
-    public void validateFields(){
+
+    public void validateFields() {
         String customerName = txtCustomerName.getText();
         String customerMobileNumber = txtMobileNumber.getText();
         String customerEmail = txtEmail.getText();
-        if(!customerName.equals("") && customerMobileNumber.matches(mobileNumberPattern) && customerMobileNumber.length() == 8 && customerEmail.matches(emailPattern) && grandTotal > 0){
+        if (!customerName.equals("") && customerMobileNumber.matches(mobileNumberPattern) && customerMobileNumber.length() == 8 && customerEmail.matches(emailPattern) && grandTotal > 0) {
             btnGenerateBillAndPrint.setEnabled(true);
-        }else{
+        } else {
             btnGenerateBillAndPrint.setEnabled(false);
         }
     }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -162,6 +183,11 @@ public class PlaceOrder extends javax.swing.JFrame {
         getContentPane().add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 180, -1, -1));
 
         txtCustomerName.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtCustomerName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtCustomerNameKeyReleased(evt);
+            }
+        });
         getContentPane().add(txtCustomerName, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 220, 250, -1));
 
         jLabel5.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -170,6 +196,11 @@ public class PlaceOrder extends javax.swing.JFrame {
         getContentPane().add(jLabel5, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 270, -1, -1));
 
         txtMobileNumber.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtMobileNumber.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtMobileNumberKeyReleased(evt);
+            }
+        });
         getContentPane().add(txtMobileNumber, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 310, 250, -1));
 
         jLabel6.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -178,6 +209,11 @@ public class PlaceOrder extends javax.swing.JFrame {
         getContentPane().add(jLabel6, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 350, -1, -1));
 
         txtEmail.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        txtEmail.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                txtEmailKeyReleased(evt);
+            }
+        });
         getContentPane().add(txtEmail, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 390, 250, -1));
 
         jLabel8.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -186,6 +222,11 @@ public class PlaceOrder extends javax.swing.JFrame {
         getContentPane().add(jLabel8, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 90, -1, -1));
 
         jComboBox1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jComboBox1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jComboBox1ActionPerformed(evt);
+            }
+        });
         getContentPane().add(jComboBox1, new org.netbeans.lib.awtextra.AbsoluteConstraints(370, 130, 250, -1));
 
         jLabel7.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -259,11 +300,21 @@ public class PlaceOrder extends javax.swing.JFrame {
         btnAddToCart.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnAddToCart.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/add to cart.png"))); // NOI18N
         btnAddToCart.setText("Add to cart");
+        btnAddToCart.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAddToCartActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnAddToCart, new org.netbeans.lib.awtextra.AbsoluteConstraints(1070, 280, -1, -1));
 
         btnClear.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnClear.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/clear.png"))); // NOI18N
         btnClear.setText("Clear");
+        btnClear.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnClear, new org.netbeans.lib.awtextra.AbsoluteConstraints(970, 280, -1, -1));
 
         jTable1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -275,6 +326,11 @@ public class PlaceOrder extends javax.swing.JFrame {
                 "Name", "Price", "Quantity", "Total"
             }
         ));
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTable1);
 
         getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(670, 330, 530, 376));
@@ -292,6 +348,11 @@ public class PlaceOrder extends javax.swing.JFrame {
         btnGenerateBillAndPrint.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         btnGenerateBillAndPrint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/generate bill & print.png"))); // NOI18N
         btnGenerateBillAndPrint.setText("Generate Bill & Print");
+        btnGenerateBillAndPrint.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnGenerateBillAndPrintActionPerformed(evt);
+            }
+        });
         getContentPane().add(btnGenerateBillAndPrint, new org.netbeans.lib.awtextra.AbsoluteConstraints(100, 540, -1, -1));
 
         lblBillID.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
@@ -317,39 +378,144 @@ public class PlaceOrder extends javax.swing.JFrame {
         categories.forEach(category -> {
             jComboBox1.addItem(category.getName());
         });
-        String category = (String)jComboBox1.getSelectedItem();
+        String category = (String) jComboBox1.getSelectedItem();
         productNameByCategory(category);
     }//GEN-LAST:event_formComponentShown
 
     private void txtSearchKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtSearchKeyReleased
         String name = txtSearch.getText();
-        String category = (String)jComboBox1.getSelectedItem();
+        String category = (String) jComboBox1.getSelectedItem();
         filterProductByName(name, category);
     }//GEN-LAST:event_txtSearchKeyReleased
 
     private void jTable2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable2MouseClicked
-       int idx = jTable1.getSelectedRow();
-       TableModel tableModel = jTable1.getModel();
-       String productName = tableModel.getValueAt(idx, 0).toString();
-       Product product = ProductDao.getProductByName(productName);
-       txtProductName.setText(product.getName());
-       txtProductPrice.setText(product.getPrice());
-       jSpinner1.setValue(1);
-       txtProductTotal.setText(product.getPrice());
-       productPrice = Integer.parseInt(product.getPrice());
-       productTotal = Integer.parseInt(product.getPrice());
-       btnAddToCart.setEnabled(true);
+        int idx = jTable2.getSelectedRow();
+        TableModel tableModel = jTable2.getModel();
+        String productName = tableModel.getValueAt(idx, 0).toString();
+        Product product = ProductDao.getProductByName(productName);
+        txtProductName.setText(product.getName());
+        txtProductPrice.setText(product.getPrice());
+        jSpinner1.setValue(1);
+        txtProductTotal.setText(product.getPrice());
+        productPrice = Integer.parseInt(product.getPrice());
+        productTotal = Integer.parseInt(product.getPrice());
+        btnAddToCart.setEnabled(true);
     }//GEN-LAST:event_jTable2MouseClicked
 
     private void jSpinner1StateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_jSpinner1StateChanged
-        int quantity = (Integer)jSpinner1.getValue();
-        if(quantity <= 1){
+        int quantity = (Integer) jSpinner1.getValue();
+        if (quantity <= 1) {
             jSpinner1.setValue(1);
             quantity = 1;
         }
-        productTotal = productTotal * productPrice;
+        productTotal = productTotal + productPrice;
         txtProductTotal.setText(String.valueOf(productTotal));
     }//GEN-LAST:event_jSpinner1StateChanged
+
+    private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
+        String category = jComboBox1.getSelectedItem().toString();
+        productNameByCategory(category);
+    }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void btnAddToCartActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAddToCartActionPerformed
+        String name = txtProductName.getText();
+        String price = txtProductPrice.getText();
+        String qty = jSpinner1.getValue().toString();
+        DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+        dtm.addRow(new Object[]{name, price, qty, productTotal});
+        grandTotal = grandTotal + productTotal;
+        lblGrandTotal.setText(String.valueOf(grandTotal));
+        clearProductFields();
+        validateFields();
+    }//GEN-LAST:event_btnAddToCartActionPerformed
+
+    private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed
+        clearProductFields();
+    }//GEN-LAST:event_btnClearActionPerformed
+
+    private void txtCustomerNameKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtCustomerNameKeyReleased
+        validateFields();
+    }//GEN-LAST:event_txtCustomerNameKeyReleased
+
+    private void txtMobileNumberKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtMobileNumberKeyReleased
+        validateFields();
+    }//GEN-LAST:event_txtMobileNumberKeyReleased
+
+    private void txtEmailKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_txtEmailKeyReleased
+        validateFields();
+    }//GEN-LAST:event_txtEmailKeyReleased
+
+    private void btnGenerateBillAndPrintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerateBillAndPrintActionPerformed
+        String customerName = txtCustomerName.getText();
+        String customerMobileNmner = txtMobileNumber.getText();
+        String customerEmail = txtEmail.getText();
+        SimpleDateFormat dFormat = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date();
+        String todayDate = dFormat.format(date);
+        String total = String.valueOf(grandTotal);
+        String createdBy = userEmail;
+        Bill bill = new Bill();
+        bill.setID(String.valueOf(billID));
+        bill.setName(customerName);
+        bill.setCreatedBy(createdBy);
+        bill.setDate(todayDate);
+        bill.setMobileNumber(customerMobileNmner);
+        bill.setTotal(total);
+        bill.setEmail(customerEmail);
+        BillDao.save(bill);
+
+        //Creating document 
+        String path = "D:\\";
+        Document document = new Document();
+        try {
+            PdfWriter.getInstance(document, new FileOutputStream(path + billID + ".pdf"));
+            document.open();
+            Paragraph p1 = new Paragraph("                    Cafe Management System(CMS)\n");
+            document.add(p1);
+            Paragraph startNewLine = new Paragraph("*************************************************************************\n");
+            document.add(startNewLine);
+            Paragraph p3 = new Paragraph("\tBillID :" + billID + "\nCustomer Name : " + customerName + "\nTotal Paid : " + total);
+            document.add(p3);
+            document.add(startNewLine);
+            PdfPTable pTable = new PdfPTable(4);
+            pTable.addCell("Name");
+            pTable.addCell("Price");
+            pTable.addCell("Quantity");
+            pTable.addCell("Total");
+            for (int r = 0; r < jTable1.getRowCount(); r++) {
+                String name_doc = jTable1.getValueAt(r, 0).toString();
+                String price_doc = jTable1.getValueAt(r, 1).toString();
+                String quantity_doc = jTable1.getValueAt(r, 2).toString();
+                String total_doc = jTable1.getValueAt(r, 3).toString();
+                pTable.addCell(name_doc);
+                pTable.addCell(price_doc);
+                pTable.addCell(quantity_doc);
+                pTable.addCell(total_doc);
+            }
+            document.add(pTable);
+            document.add(startNewLine);
+            Paragraph thankMessage = new Paragraph("Thank you, please visit again.");
+            document.add(thankMessage);
+            OpenPDF.openPdfbyID(String.valueOf(billID));
+        } catch (DocumentException | FileNotFoundException e) {
+            JOptionPane.showMessageDialog(null, e.getMessage(), "Message", JOptionPane.ERROR_MESSAGE);
+        }
+        document.close();
+        setVisible(false);
+        new PlaceOrder(createdBy).setVisible(true);
+    }//GEN-LAST:event_btnGenerateBillAndPrintActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        int idx = jTable1.getSelectedRow();
+        int a = JOptionPane.showConfirmDialog(null, "Do you really want to remove this product","Select" , JOptionPane.YES_NO_OPTION);
+        if(a == 0){
+            TableModel tableModel = jTable1.getModel();
+            String total = tableModel.getValueAt(idx, 3).toString();
+            grandTotal = grandTotal - Integer.parseInt(total);
+            lblGrandTotal.setText(String.valueOf(grandTotal));
+            ((DefaultTableModel)tableModel).removeRow(idx);
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
     /**
      * @param args the command line arguments
      */

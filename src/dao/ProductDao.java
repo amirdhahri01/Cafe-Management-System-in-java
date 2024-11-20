@@ -75,7 +75,8 @@ public class ProductDao {
     public static Product getProductByName(String name){
         Product product = new Product();
         try {
-            ResultSet rs = DbOperations.getData("SELECT * FROM product WHERE name='" + name +"';");
+            ResultSet rs = DbOperations.getData("SELECT * FROM product WHERE name='" + name + "';");
+            rs.next();
             product.setName(rs.getString("name"));
             product.setCategory(rs.getString("category"));
             product.setPrice(rs.getString("price"));
